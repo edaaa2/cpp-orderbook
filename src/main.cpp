@@ -139,6 +139,29 @@ void testMultipleFills() {
     std::cout << "Multiple Fills Test Passed!\n";
 }
 
+void testReduceOrder() {
+    BookSide<std::greater<long long>> bids;
+    bids.addOrder(Order{601, 100, 30, Side::BUY});
+    bids.addOrder(Order{602, 99, 15, Side::BUY});
+
+    assert(bids.reduceOrder(601, 10));
+    assert(bids.findOrder(601)->quantity == 20);
+    assert(bids.bestOrder().orderId == 601);
+
+    assert(!bids.reduceOrder(601, 21));
+    assert(!bids.reduceOrder(601, 0));
+    assert(!bids.reduceOrder(601, -1));
+    assert(bids.findOrder(601)->quantity == 20);
+
+    assert(bids.reduceOrder(601, 20));
+    assert(!bids.findOrder(601));
+    assert(!bids.reduceOrder(601, 1));
+    assert(bids.bestOrder().orderId == 602);
+    assert(bids.bestOrder().quantity == 15);
+
+    std::cout << "Reduce Order Test Passed!\n";
+}
+
 int main(int argc, char* argv[]) {
 
     if (argc > 1 && std::string(argv[1]) == "test") {
@@ -146,6 +169,7 @@ int main(int argc, char* argv[]) {
         testCancelMiddleOrder();
         testPartialFillRemaining();
         testMultipleFills();
+        testReduceOrder();
 
         std::cout << "All tests passed!\n";
         return 0;

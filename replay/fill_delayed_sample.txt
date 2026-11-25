@@ -1,0 +1,6 @@
+# At 10 us the new best bid is 101. The simulated order expires at 30 us.
+0 A 1 B 100 500
+0 A 2 S 102 100
+5 A 3 B 101 400
+12 E 3 150
+30 E 3 10

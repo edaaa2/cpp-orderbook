@@ -35,7 +35,7 @@ public:
                     break;
                 }
  
-                int tradeQty = std::min(incomingOrder.quantity, bestAsk.quantity);
+                Quantity tradeQty = std::min(incomingOrder.quantity, bestAsk.quantity);
 
                 incomingOrder.quantity -= tradeQty;
                 bestAsk.quantity -= tradeQty;
@@ -73,7 +73,7 @@ public:
                 }
 
                 // compute quantity Trade
-                int tradeQty = std::min(incomingOrder.quantity, bestBid.quantity);
+                Quantity tradeQty = std::min(incomingOrder.quantity, bestBid.quantity);
                 incomingOrder.quantity -= tradeQty;
                 bestBid.quantity -= tradeQty;
 
@@ -99,7 +99,7 @@ public:
         return reports;
     }
 
-    bool cancelOrder(int orderId) {
+    bool cancelOrder(OrderId orderId) {
         if (bids.cancelOrder(orderId)) {
             return true;
         }
@@ -107,7 +107,7 @@ public:
         return asks.cancelOrder(orderId);
     }
 
-    std::optional<Order> findOrder(int orderId) const {
+    std::optional<Order> findOrder(OrderId orderId) const {
 
         auto result = bids.findOrder(orderId);
 

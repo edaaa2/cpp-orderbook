@@ -1,0 +1,9 @@
+# timestamp_us action order_id [side price_ticks] quantity
+0 A 1 B 100 30
+0 A 2 S 102 10
+1000 E 2 10
+1000 A 3 S 103 30
+2000 A 4 S 103 60
+3000 C 1 30
+3000 A 5 B 99 30
+4000 C 4 60

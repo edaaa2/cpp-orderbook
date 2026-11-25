@@ -1,10 +1,14 @@
 #pragma once
 
+#include <cstdint>
 #include "Side.h"
 
+using OrderId = std::int64_t;
+using Quantity = std::int64_t;
+
 struct Order {
-    int orderId;
+    OrderId orderId;
     long long price;
-    int quantity;
+    Quantity quantity;
     Side side;
 };

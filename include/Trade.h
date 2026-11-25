@@ -1,8 +1,10 @@
 #pragma once
 
+#include "Order.h"
+
 struct Trade {
-    int buyOrderId;
-    int sellOrderId;
+    OrderId buyOrderId;
+    OrderId sellOrderId;
     long long price;
-    int quantity;
+    Quantity quantity;
 };

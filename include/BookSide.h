@@ -17,7 +17,7 @@ class BookSide {
 private:
     std::map<long long, std::list<Order>, Compare> orders;
 
-    std::unordered_map<int, std::list<Order>::iterator> orderIndex;
+    std::unordered_map<OrderId, std::list<Order>::iterator> orderIndex;
 
 public:
     void addOrder(Order order){
@@ -45,10 +45,26 @@ public:
         return orders.empty();  //calls std::map empty function
     }
 
+    // Sum all resting orders at the best price. Requires a nonempty side.
+    Quantity bestLevelQuantity() const {
+        Quantity total = 0;
+        for (const auto& order : orders.begin()->second) {
+            total += order.quantity;
+        }
+        return total;
+    }
+
+    template <typename Visitor>
+    void visitBestLevel(Visitor visit) const {
+        for (const auto& order : orders.begin()->second) {
+            visit(order);
+        }
+    }
+
     void removeBestOrder() {
         auto it = orders.begin();
 
-        int orderId = it->second.front().orderId;
+        OrderId orderId = it->second.front().orderId;
         orderIndex.erase(orderId);
 
         it->second.pop_front();   // calls std::list member function
@@ -58,7 +74,7 @@ public:
     }
 
 
-    bool cancelOrder(int orderId) {
+    bool cancelOrder(OrderId orderId) {
         auto indexIt = orderIndex.find(orderId); //unordered_map key and value
 
         if (indexIt == orderIndex.end()) {
@@ -77,13 +93,30 @@ public:
         return true;
     }
 
-    std::optional<Order> findOrder(int orderId) const {
+    std::optional<Order> findOrder(OrderId orderId) const {
         auto it = orderIndex.find(orderId);
 
         if (it == orderIndex.end()) {
             return std::nullopt;
         }
         return *(it->second);
+    }
+
+    // Apply a quantity reduction from an external event without matching.
+    bool reduceOrder(OrderId orderId, Quantity quantity) {
+        auto indexIt = orderIndex.find(orderId);
+        if (indexIt == orderIndex.end() || quantity <= 0 ||
+            quantity > indexIt->second->quantity) {
+            return false;
+        }
+
+        auto orderIt = indexIt->second;
+        if (quantity == orderIt->quantity) {
+            return cancelOrder(orderId);
+        }
+
+        orderIt->quantity -= quantity;
+        return true;
     }
 
     
